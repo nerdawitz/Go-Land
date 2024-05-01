@@ -1,9 +1,9 @@
 package main
 
 import (
+	"html/template"
 	"log"
 	"net/http"
-	"text/template"
 )
 
 // create variable tpl of type template
