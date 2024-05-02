@@ -10,9 +10,51 @@ import (
 // create variable tpl of type template
 var tpl template.Template
 
+// create variables for for each page's HTML
+var (
+	homeHTML        []byte
+	attractionsHTML []byte
+	eventsHTML      []byte
+	planHTML        []byte
+	buyticketsHTML  []byte
+	successHTML     []byte
+)
+
 // declare init() and parse the templates in tpl
 func init() {
 	tpl = *template.Must(template.ParseFiles("templates/index.html", "templates/header.html", "templates/footer.html"))
+
+	// read templates and store in their respective variable, store error in err and handle the error
+	var err error
+	homeHTML, err = os.ReadFile("templates/home.html")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	attractionsHTML, err = os.ReadFile("templates/attractions.html")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	eventsHTML, err = os.ReadFile("templates/events.html")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	planHTML, err = os.ReadFile("templates/plan.html")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	buyticketsHTML, err = os.ReadFile("templates/tickets.html")
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	successHTML, err = os.ReadFile("templates/success.html")
+	if err != nil {
+		log.Fatalln(err)
+	}
 }
 
 // start function main()
@@ -44,19 +86,9 @@ func main() {
 
 // declare index()
 func index(w http.ResponseWriter, r *http.Request) {
-	// read home.html and store in con, store error in err and handle the error
-	con, err := os.ReadFile("templates/home.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Fatalln(err)
-		return
-	}
 
-	// convert con to string and store in body
-	body := string(con)
-
-	// execute tpl with index.html, pass the body in as data and use template.HTML() to write it as html code
-	err = tpl.ExecuteTemplate(w, "index.html", template.HTML(body))
+	// execute tpl with index.html, pass homeHTML in as data and use template.HTML() to write it as html code
+	err := tpl.ExecuteTemplate(w, "index.html", template.HTML(homeHTML))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Fatalln(err)
@@ -65,19 +97,8 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 // declare attractions()
 func attractions(w http.ResponseWriter, r *http.Request) {
-	// use ReadFile to read attractions.html and store in con, handle the error
-	con, err := os.ReadFile("templates/attractions.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Fatalln(err)
-		return
-	}
-
-	// convert con to string and store in body
-	body := string(con)
-
 	// execute tpl with attractions.html
-	err = tpl.ExecuteTemplate(w, "index.html", template.HTML(body))
+	err := tpl.ExecuteTemplate(w, "index.html", template.HTML(attractionsHTML))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Fatal(err)
@@ -86,19 +107,8 @@ func attractions(w http.ResponseWriter, r *http.Request) {
 
 // declare events()
 func events(w http.ResponseWriter, r *http.Request) {
-	// read events.html and store in con and handle the error
-	con, err := os.ReadFile("templates/events.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Fatalln(err)
-		return
-	}
-
-	// convert con to string and store in body
-	body := string(con)
-
 	// execute tpl with events.html
-	err = tpl.ExecuteTemplate(w, "index.html", template.HTML(body))
+	err := tpl.ExecuteTemplate(w, "index.html", template.HTML(eventsHTML))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Fatalln(err)
@@ -107,19 +117,8 @@ func events(w http.ResponseWriter, r *http.Request) {
 
 // declare plan()
 func plan(w http.ResponseWriter, r *http.Request) {
-	// read plan.html and store in con and handle error
-	con, err := os.ReadFile("templates/plan.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Fatalln(err)
-		return
-	}
-
-	// convert con to string and store in body
-	body := string(con)
-
 	// execute tpl with plan.html
-	err = tpl.ExecuteTemplate(w, "index.html", template.HTML(body))
+	err := tpl.ExecuteTemplate(w, "index.html", template.HTML(planHTML))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Fatalln(err)
@@ -128,24 +127,13 @@ func plan(w http.ResponseWriter, r *http.Request) {
 
 // declare tickets()
 func tickets(w http.ResponseWriter, r *http.Request) {
-	// read tickets.html and store in con and handle the error
-	con, err := os.ReadFile("templates/tickets.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Fatalln(err)
-		return
-	}
-
-	// convert con to string and store in body
-	body := string(con)
-
 	// check if the request method is post
 	if r.Method == http.MethodPost {
 		// if it is, then redirect the link to see other page "success.html"
 		http.Redirect(w, r, "/success", http.StatusSeeOther)
 	}
 	// execute tpl with tickets.html
-	err = tpl.ExecuteTemplate(w, "index.html", template.HTML(body))
+	err := tpl.ExecuteTemplate(w, "index.html", template.HTML(buyticketsHTML))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Fatalln(err)
@@ -154,19 +142,8 @@ func tickets(w http.ResponseWriter, r *http.Request) {
 
 // declare success()
 func success(w http.ResponseWriter, r *http.Request) {
-	// read success.html and store in con and handle error
-	con, err := os.ReadFile("templates/success.html")
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		log.Fatalln(err)
-		return
-	}
-
-	// convert con to string and store in body
-	body := string(con)
-
 	// execute tpl with success.html
-	err = tpl.ExecuteTemplate(w, "index.html", template.HTML(body))
+	err := tpl.ExecuteTemplate(w, "index.html", template.HTML(successHTML))
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		log.Fatalln(err)

@@ -6,6 +6,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // email validation
+
+        // create constant emailInput and get email from DOM and store in it
+        const emailInput = document.getElementById('email');
+
+        // create constant emailError and get email-error from DOM and store in it
+        const emailError = document.getElementById('email-error');
+
+        // add event listener to emailInput
+        emailInput.addEventListener('blur', () => {
+            if (emailInput.validity.typeMismatch) {
+                emailError.classList.remove('hidden');
+            } else {
+                emailError.classList.add('hidden');
+            }
+        });
+    </script>
     <title>GoLand</title>
 </head>
 
